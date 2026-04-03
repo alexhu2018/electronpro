@@ -1,0 +1,909 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clash Verge Mock</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #1f2026;
+        --shell: #262830;
+        --panel: #2b2e37;
+        --panel-2: #31343e;
+        --panel-3: #373b46;
+        --line: rgba(255, 255, 255, 0.08);
+        --text: #f3f4f6;
+        --muted: #b8bcc9;
+        --muted-2: #8c92a5;
+        --blue: #1f8fff;
+        --blue-2: #0f6ddf;
+        --green: #36d963;
+        --amber: #f59e0b;
+        --shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+        --radius-xl: 28px;
+        --radius-lg: 22px;
+        --radius-md: 16px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+      }
+
+      html {
+        font-size: 13px;
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 120ms ease;
+        background:
+          radial-gradient(circle at top right, rgba(31, 143, 255, 0.12), transparent 28%),
+          linear-gradient(180deg, #20222a 0%, #181a20 100%);
+        color: var(--text);
+        font-family:
+          Inter,
+          "SF Pro Display",
+          "PingFang SC",
+          "Noto Sans SC",
+          "Segoe UI",
+          sans-serif;
+      }
+
+      .app {
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        width: 100%;
+        height: 100%;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        padding: 24px 14px 16px;
+        background: linear-gradient(180deg, #2d2f39 0%, #262832 100%);
+        border-right: 1px solid var(--line);
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 10px 22px;
+        font-size: 1.45rem;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+      }
+
+      .brand-mark {
+        width: 46px;
+        height: 46px;
+        display: grid;
+        place-items: center;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.08);
+        font-size: 1.6rem;
+        line-height: 1;
+      }
+
+      .nav {
+        display: grid;
+        gap: 4px;
+        margin-top: 4px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-height: 60px;
+        padding: 0 14px;
+        border-radius: 16px;
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        text-align: left;
+        cursor: pointer;
+        transition:
+          background-color 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .nav-item.is-active {
+        background: linear-gradient(90deg, rgba(31, 143, 255, 0.8), rgba(47, 104, 194, 0.78));
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      }
+
+      .nav-icon {
+        width: 24px;
+        text-align: center;
+        font-size: 1.55rem;
+        line-height: 1;
+        opacity: 0.96;
+      }
+
+      .nav-label {
+        font-size: 1.22rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-spacer {
+        flex: 1;
+      }
+
+      .traffic {
+        margin-top: 12px;
+        padding: 14px 14px 16px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+      }
+
+      .traffic-chart {
+        height: 74px;
+        margin-bottom: 14px;
+        border-radius: 12px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01)),
+          repeating-linear-gradient(
+            180deg,
+            transparent 0,
+            transparent 23px,
+            rgba(255, 255, 255, 0.08) 24px
+          );
+        position: relative;
+        overflow: hidden;
+      }
+
+      .traffic-chart::before,
+      .traffic-chart::after {
+        content: "";
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 14px;
+        height: 4px;
+        border-radius: 999px;
+      }
+
+      .traffic-chart::before {
+        background: linear-gradient(90deg, #ff9f0a, #ff9f0a 35%, transparent 35%);
+        transform: skewY(-6deg);
+        clip-path: polygon(0 85%, 18% 85%, 26% 55%, 39% 58%, 50% 20%, 58% 44%, 67% 40%, 76% 15%, 84% 70%, 100% 70%, 100% 100%, 0 100%);
+      }
+
+      .traffic-chart::after {
+        background: linear-gradient(90deg, #1f8fff, #1f8fff 42%, transparent 42%);
+        clip-path: polygon(0 100%, 16% 100%, 24% 70%, 34% 74%, 45% 30%, 54% 48%, 66% 26%, 75% 62%, 86% 18%, 100% 12%, 100% 100%);
+      }
+
+      .traffic-stats {
+        display: grid;
+        gap: 10px;
+        font-size: 1rem;
+      }
+
+      .traffic-row {
+        display: grid;
+        grid-template-columns: 20px 1fr auto;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .traffic-arrow-up {
+        color: var(--amber);
+        font-size: 1.5rem;
+      }
+
+      .traffic-arrow-down {
+        color: var(--blue);
+        font-size: 1.5rem;
+      }
+
+      .traffic-value {
+        font-size: 1.3rem;
+        font-weight: 700;
+      }
+
+      .traffic-unit {
+        color: var(--muted-2);
+        font-size: 1rem;
+      }
+
+      .content {
+        display: grid;
+        grid-template-rows: 72px minmax(0, 1fr);
+        min-width: 0;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      .page-view {
+        min-width: 0;
+      }
+
+      .placeholder-page {
+        display: grid;
+        place-items: center;
+        min-height: calc(100vh - 72px);
+        padding: 24px;
+      }
+
+      .placeholder-card {
+        width: min(100%, 720px);
+        padding: 40px 42px;
+        border-radius: 28px;
+        background: linear-gradient(180deg, var(--panel) 0%, #2b2d36 100%);
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+
+      .placeholder-eyebrow {
+        margin-bottom: 12px;
+        color: #1f8fff;
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      .placeholder-title {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 800;
+      }
+
+      .placeholder-text {
+        margin: 14px 0 0;
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px 0 22px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(32, 34, 41, 0.96);
+        backdrop-filter: blur(12px);
+      }
+
+      .page-title {
+        margin: 0;
+        font-size: 1.55rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        color: var(--text);
+      }
+
+      .action {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        color: var(--text);
+        font-size: 1.45rem;
+        border: 0;
+        background: transparent;
+      }
+
+      .workspace {
+        min-width: 0;
+        overflow: auto;
+        padding: 16px 16px 20px 14px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.9fr);
+        gap: 14px;
+        align-items: start;
+      }
+
+      .column {
+        display: grid;
+        gap: 14px;
+        min-width: 0;
+      }
+
+      .card {
+        padding: 18px 0 14px;
+        border-radius: 24px;
+        background: linear-gradient(180deg, var(--panel) 0%, #2b2d36 100%);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .card-header {
+        padding: 0 22px 14px;
+        font-size: 1.2rem;
+        font-weight: 800;
+      }
+
+      .setting-list {
+        display: grid;
+      }
+
+      .setting-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 14px;
+        min-height: 72px;
+        padding: 0 14px 0 18px;
+        border-top: 1px solid rgba(255, 255, 255, 0.03);
+      }
+
+      .setting-item.highlight {
+        background: rgba(84, 113, 118, 0.23);
+      }
+
+      .setting-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.08rem;
+        font-weight: 700;
+      }
+
+      .setting-helper {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 500;
+      }
+
+      .label-group {
+        min-width: 0;
+      }
+
+      .icons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 1.2rem;
+      }
+
+      .pill,
+      .dropdown,
+      .button,
+      .switch {
+        border-radius: 16px;
+      }
+
+      .switch {
+        width: 66px;
+        height: 36px;
+        padding: 3px;
+        background: #4c4d54;
+        position: relative;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+      }
+
+      .switch::before {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 31px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #fff;
+        transition: transform 0.2s ease;
+      }
+
+      .switch.on {
+        background: linear-gradient(180deg, #1f8fff, #1980f0);
+      }
+
+      .switch.on::before {
+        transform: translateX(0);
+      }
+
+      .switch.off::before {
+        transform: translateX(-32px);
+      }
+
+      .icon-circle {
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        border: 3px solid var(--green);
+        color: var(--green);
+        font-size: 0.88rem;
+      }
+
+      .setting-item .gear,
+      .setting-item .trash,
+      .setting-item .info,
+      .setting-item .copy {
+        font-size: 1.25rem;
+        line-height: 1;
+      }
+
+      .gear {
+        color: #d0d5de;
+      }
+
+      .trash {
+        color: var(--amber);
+      }
+
+      .info {
+        color: #aeb4c3;
+      }
+
+      .value {
+        min-width: 118px;
+        padding: 11px 14px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 1rem;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .value.small {
+        min-width: 170px;
+        text-align: left;
+      }
+
+      .dropdown {
+        min-width: 180px;
+        padding: 12px 14px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.02);
+        color: var(--text);
+        font-size: 1rem;
+      }
+
+      .dropdown.row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      .dropdown .caret {
+        font-size: 1rem;
+      }
+
+      .segmented {
+        display: inline-grid;
+        grid-template-columns: repeat(3, 1fr);
+        min-width: 232px;
+        border: 1px solid rgba(31, 143, 255, 0.8);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .segmented span {
+        padding: 11px 14px;
+        text-align: center;
+        color: #1f8fff;
+        font-size: 0.88rem;
+        font-weight: 700;
+        border-right: 1px solid rgba(31, 143, 255, 0.6);
+      }
+
+      .segmented span:last-child {
+        border-right: 0;
+        background: #1f8fff;
+        color: #fff;
+      }
+
+      .link {
+        color: #1f8fff;
+        font-size: 0.88rem;
+        font-weight: 700;
+      }
+
+      .chevron {
+        color: #fff;
+        font-size: 2.3rem;
+        line-height: 1;
+      }
+
+      .two-up {
+        display: grid;
+        gap: 18px;
+      }
+
+      .scroll-spacer {
+        height: 42px;
+      }
+
+      body.app-ready {
+        opacity: 1;
+      }
+
+      @media (max-width: 1380px) {
+        body {
+          overflow: auto;
+        }
+
+        .app {
+          grid-template-columns: 300px minmax(0, 1fr);
+          min-height: 100vh;
+        }
+
+        .sidebar {
+          height: 100vh;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 960px) {
+        body {
+          overflow: auto;
+        }
+
+        .app {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+          position: relative;
+          height: auto;
+        }
+
+        .brand {
+          justify-content: center;
+        }
+
+        .nav {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .nav-item {
+          min-height: 64px;
+        }
+
+        .nav-label {
+          font-size: 1.4rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">🐾</div>
+          <div>Clash Verge</div>
+        </div>
+
+        <nav class="nav" aria-label="主导航">
+          <button class="nav-item" type="button" data-page="home">
+            <span class="nav-icon">⌂</span>
+            <span class="nav-label">首页</span>
+          </button>
+          <button class="nav-item" type="button" data-page="proxy">
+            <span class="nav-icon">≋</span>
+            <span class="nav-label">代理</span>
+          </button>
+          <button class="nav-item" type="button" data-page="subscription">
+            <span class="nav-icon">▤</span>
+            <span class="nav-label">订阅</span>
+          </button>
+          <button class="nav-item" type="button" data-page="connection">
+            <span class="nav-icon">◌</span>
+            <span class="nav-label">连接</span>
+          </button>
+          <button class="nav-item" type="button" data-page="rules">
+            <span class="nav-icon">↳</span>
+            <span class="nav-label">规则</span>
+          </button>
+          <button class="nav-item" type="button" data-page="logs">
+            <span class="nav-icon">☰</span>
+            <span class="nav-label">日志</span>
+          </button>
+          <button class="nav-item" type="button" data-page="test">
+            <span class="nav-icon">⌁</span>
+            <span class="nav-label">测试</span>
+          </button>
+          <button class="nav-item is-active" type="button" data-page="settings" aria-current="page">
+            <span class="nav-icon">⚙</span>
+            <span class="nav-label">设置</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <section class="traffic" aria-label="流量概览">
+          <div class="traffic-chart"></div>
+          <div class="traffic-stats">
+            <div class="traffic-row">
+              <span class="traffic-arrow-up">↑</span>
+              <span class="traffic-value">388</span>
+              <span class="traffic-unit">B/s</span>
+            </div>
+            <div class="traffic-row">
+              <span class="traffic-arrow-down">↓</span>
+              <span class="traffic-value">373</span>
+              <span class="traffic-unit">B/s</span>
+            </div>
+            <div class="traffic-row">
+              <span class="nav-icon" style="font-size: 1.3rem;">◫</span>
+              <span class="traffic-value">24.6</span>
+              <span class="traffic-unit">MB</span>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="content">
+        <header class="topbar">
+        <h1 id="page-title" class="page-title">设置</h1>
+
+          <div class="actions" aria-label="页面操作">
+            <button class="action" type="button" aria-label="帮助">?</button>
+            <button class="action" type="button" aria-label="发送">✈</button>
+            <button class="action" type="button" aria-label="GitHub">⌘</button>
+          </div>
+        </header>
+
+        <main class="workspace">
+          <div id="settings-page" class="page-view">
+            <div class="grid">
+            <div class="column">
+              <section class="card">
+                <div class="card-header">系统设置</div>
+                <div class="setting-list">
+                  <div class="setting-item highlight">
+                    <div class="setting-label">
+                      <span class="icon-circle">▶</span>
+                      <span>虚拟网卡模式</span>
+                      <span class="icons">
+                        <span class="gear">⚙</span>
+                        <span class="trash">⌫</span>
+                      </span>
+                    </div>
+                    <div class="switch on" aria-hidden="true"></div>
+                  </div>
+
+                  <div class="setting-item highlight">
+                    <div class="setting-label">
+                      <span class="icon-circle">▶</span>
+                      <span>系统代理</span>
+                      <span class="icons">
+                        <span class="gear">⚙</span>
+                      </span>
+                    </div>
+                    <div class="switch on" aria-hidden="true"></div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">开机自启</span>
+                    </div>
+                    <div class="switch on" aria-hidden="true"></div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">静默启动</span>
+                      <span class="info">i</span>
+                    </div>
+                    <div class="switch off" aria-hidden="true"></div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card">
+                <div class="card-header">Clash 设置</div>
+                <div class="setting-list">
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">局域网连接</span>
+                      <span class="copy">⛓</span>
+                    </div>
+                    <div class="switch off" aria-hidden="true"></div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">DNS 覆写</span>
+                      <span class="gear">⚙</span>
+                    </div>
+                    <div class="switch off" aria-hidden="true"></div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">IPv6</span>
+                    </div>
+                    <div class="switch on" aria-hidden="true"></div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">统一延迟</span>
+                      <span class="info">i</span>
+                    </div>
+                    <div class="switch on" aria-hidden="true"></div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">日志等级</span>
+                      <span class="info">i</span>
+                    </div>
+                    <div class="dropdown row">
+                      <span>Info</span>
+                      <span class="caret">▼</span>
+                    </div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">端口设置</span>
+                    </div>
+                    <div class="value">7897</div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div class="column">
+              <section class="card">
+                <div class="card-header">Verge 基础设置</div>
+                <div class="setting-list">
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">语言设置</span>
+                    </div>
+                    <div class="dropdown row">
+                      <span>中文</span>
+                      <span class="caret">▼</span>
+                    </div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">主题模式</span>
+                    </div>
+                    <div class="segmented" aria-label="主题模式">
+                      <span>浅色</span>
+                      <span>深色</span>
+                      <span>系统</span>
+                    </div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">托盘点击事件</span>
+                    </div>
+                    <div class="dropdown row">
+                      <span>显示主窗口</span>
+                      <span class="caret">▼</span>
+                    </div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">复制环境变量类型</span>
+                      <span class="copy">⧉</span>
+                    </div>
+                    <div class="dropdown row">
+                      <span>Bash</span>
+                      <span class="caret">▼</span>
+                    </div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">启动页面</span>
+                    </div>
+                    <div class="dropdown row">
+                      <span>首页</span>
+                      <span class="caret">▼</span>
+                    </div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">启动脚本</span>
+                    </div>
+                    <div class="link">浏览</div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">主题设置</span>
+                    </div>
+                    <div class="chevron">›</div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">界面设置</span>
+                    </div>
+                    <div class="chevron">›</div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">杂项设置</span>
+                    </div>
+                    <div class="chevron">›</div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">热键设置</span>
+                    </div>
+                    <div class="chevron">›</div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card">
+                <div class="card-header">Verge 高级设置</div>
+                <div class="setting-list">
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="label-group">高级功能面板</span>
+                    </div>
+                    <div class="dropdown row">
+                      <span>留白</span>
+                      <span class="caret">▼</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="scroll-spacer"></div>
+              </section>
+            </div>
+            </div>
+          </div>
+
+          <section id="placeholder-page" class="placeholder-page page-view" hidden>
+            <div class="placeholder-card">
+              <div class="placeholder-eyebrow" id="placeholder-eyebrow">HOME</div>
+              <h2 class="placeholder-title" id="placeholder-title">首页</h2>
+              <p class="placeholder-text" id="placeholder-text">
+                这里先保留空白页。后续你可以把对应功能页逐步填进来，保持左侧导航和右侧内容区的结构不变。
+              </p>
+            </div>
+          </section>
+        </main>
+      </section>
+    </div>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

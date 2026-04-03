@@ -1,0 +1,57 @@
+{
+  "name": "electron-hello-world",
+  "version": "1.0.0",
+  "description": "Minimal Electron hello world starter",
+  "author": "Alex Hu <alexhu2018@github.com>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:alexhu2018/electronpro.git"
+  },
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "release": "electron-builder --publish always"
+  },
+  "devDependencies": {
+    "@electron/notarize": "^3.1.1",
+    "electron": "^34.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.example.electronhelloworld",
+    "productName": "ElectronHelloWorld",
+    "icon": "icon.png",
+    "afterSign": "build/notarize.js",
+    "electronDownload": {
+      "mirror": "https://npmmirror.com/mirrors/electron/"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "package.json",
+      "build/icon.png"
+    ],
+    "mac": {
+      "hardenedRuntime": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.inherit.plist",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
+    }
+  }
+}
