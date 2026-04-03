@@ -50,7 +50,8 @@ npm run release
 - macOS 代码签名
 - notarization
 
-当前仓库没有现成图标资源，所以这版先保留默认 Electron 图标，等你准备好 `icon.icns`、`icon.png` 后再接入 `build.mac.icon`、`build.win.icon` 和 `build.linux.icon`。
+当前仓库已经放了一个基础图标：[`build/icon.png`](/Users/huzhang/aitest/electron-hello/build/icon.png)。它会同时用于窗口图标和打包图标。
+如果后面你要做平台级优化，可以再补 `icon.icns` 和 `icon.ico`，并继续沿用同一个 `build.icon` 配置。
 
 ## 文件说明
 

@@ -20,6 +20,7 @@
   "build": {
     "appId": "com.example.electronhelloworld",
     "productName": "ElectronHelloWorld",
+    "icon": "icon.png",
     "electronDownload": {
       "mirror": "https://npmmirror.com/mirrors/electron/"
     },
