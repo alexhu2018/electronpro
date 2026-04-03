@@ -2,6 +2,11 @@
   "name": "electron-hello-world",
   "version": "1.0.0",
   "description": "Minimal Electron hello world starter",
+  "author": "Alex Hu <alexhu2018@github.com>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:alexhu2018/electronpro.git"
+  },
   "main": "main.js",
   "scripts": {
     "start": "electron .",

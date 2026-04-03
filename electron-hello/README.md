@@ -42,6 +42,16 @@ GitHub Actions 会在带 `v` 前缀的 tag 推送后自动构建，并把 `dist/
 npm run release
 ```
 
+## 正式发布
+
+正式对外发布前，建议再补这三项：
+
+- 应用图标
+- macOS 代码签名
+- notarization
+
+当前仓库没有现成图标资源，所以这版先保留默认 Electron 图标，等你准备好 `icon.icns`、`icon.png` 后再接入 `build.mac.icon`、`build.win.icon` 和 `build.linux.icon`。
+
 ## 文件说明
 
 - `main.js`: 主进程，创建窗口
