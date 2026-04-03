@@ -21,6 +21,11 @@ function createWindow() {
     win.show();
   });
 
+  win.on("resize", () => {
+    const [width, height] = win.getSize();
+    console.log(`window resized: ${width}x${height}`);
+  });
+
   win.loadFile("index.html");
 }
 
